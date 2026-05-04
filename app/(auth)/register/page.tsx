@@ -19,7 +19,7 @@ export default function RegisterPage() {
         <div className={`w-full max-w-sm border-primary/10 shadow-xl shadow-primary/5 ${cardSection}`}>
           <h1 className="text-xl font-semibold text-foreground">Register</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Create your account to start booking and managing counseling sessions.
+            Create your account to start booking your counseling sessions.
           </p>
 
           <form action={formAction} className="mt-6 flex flex-col gap-4">

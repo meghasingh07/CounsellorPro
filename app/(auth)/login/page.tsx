@@ -19,7 +19,7 @@ export default function LoginPage() {
         <div className={`w-full max-w-sm border-primary/10 shadow-xl shadow-primary/5 ${cardSection}`}>
           <h1 className="text-xl font-semibold text-foreground">Log in</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sign in with the email and password you use in Supabase Auth.
+            Sign in with the email and password.
           </p>
 
           <form action={formAction} className="mt-6 flex flex-col gap-4">
