@@ -12,10 +12,17 @@ import { getOrCreateCounselorProfile } from "@/lib/counselor/get-or-create-profi
 import type { AppointmentStatus } from "@/lib/types/appointment-status";
 import Link from "next/link";
 
-const SLOT_HINTS: Record<string, string> = {
+const ADD_SLOT_HINTS: Record<string, string> = {
   missing: "Fill in date, start time, and end time.",
   time: "End time must be after start time.",
   db: "Could not save the slot. Please try again.",
+};
+
+const EDIT_SLOT_HINTS: Record<string, string> = {
+  "edit-missing": "Could not find that slot, or details were incomplete.",
+  "edit-time": "Updated end time must be after start time.",
+  "edit-booked": "Booked slots cannot be edited.",
+  "edit-db": "Could not update slot timing. Please try again.",
 };
 
 const APPT_HINTS: Record<string, string> = {
@@ -34,7 +41,8 @@ export default async function CounselorDashboardPage({ searchParams }: SearchPro
   const profileError =
     typeof sp.profileError === "string" ? decodeURIComponent(sp.profileError) : undefined;
 
-  const slotHint = slotCode ? SLOT_HINTS[slotCode] ?? null : null;
+  const slotHint = slotCode ? ADD_SLOT_HINTS[slotCode] ?? null : null;
+  const editSlotHint = slotCode ? EDIT_SLOT_HINTS[slotCode] ?? null : null;
   const apptHint = apptCode ? APPT_HINTS[apptCode] ?? null : null;
 
   const { supabase, user } = await requireDashboardRole("counselor");
@@ -167,7 +175,7 @@ export default async function CounselorDashboardPage({ searchParams }: SearchPro
           <div className="flex flex-col gap-8">
             <MeetingLinkCard meetingLink={profile.meeting_link} />
             <SlotFormCard slotHint={slotHint} />
-            <SlotsListCard slots={(slotRows ?? []) as SlotRow[]} />
+            <SlotsListCard slots={(slotRows ?? []) as SlotRow[]} slotHint={editSlotHint} />
             <AppointmentsCard appointments={appointments} hint={apptHint} />
             <FeedbackCard items={feedbackItems} />
           </div>

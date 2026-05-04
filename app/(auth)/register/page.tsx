@@ -4,7 +4,6 @@ import { registerAction, type RegisterState } from "@/app/(auth)/register/action
 import { AuthHeader } from "@/components/auth-header";
 import { AuthPageShell } from "@/components/auth-page-shell";
 import { btnPrimary, cardSection, inputClass, labelClass } from "@/lib/ui/style";
-import { USER_ROLES } from "@/lib/types/user-role";
 import Link from "next/link";
 import { useActionState } from "react";
 
@@ -64,24 +63,6 @@ export default function RegisterPage() {
                 className={`mt-1 w-full ${inputClass}`}
               />
             </div>
-            <div>
-              <label htmlFor="role" className={labelClass}>
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                defaultValue="student"
-                className={`mt-1 w-full ${inputClass}`}
-              >
-                {USER_ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {state?.error ? (
               <p className="text-sm text-red-600 dark:text-red-400" role="alert">
                 {state.error}

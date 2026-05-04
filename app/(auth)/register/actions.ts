@@ -6,7 +6,7 @@ import {
   supabasePublicEnvHelpMessage,
 } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { isUserRole, type UserRole } from "@/lib/types/user-role";
+import { isUserRole } from "@/lib/types/user-role";
 import { redirect } from "next/navigation";
 
 export type RegisterState = { error?: string; message?: string } | null;
@@ -18,7 +18,6 @@ export async function registerAction(
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const roleRaw = String(formData.get("role") ?? "student");
 
   if (!name || !email || !password) {
     return { error: "Name, email, and password are required." };
@@ -28,7 +27,7 @@ export async function registerAction(
     return { error: "Password must be at least 6 characters." };
   }
 
-  const role: UserRole = isUserRole(roleRaw) ? roleRaw : "student";
+  const role = "student";
 
   if (!isSupabasePublicEnvConfigured()) {
     return { error: supabasePublicEnvHelpMessage() };

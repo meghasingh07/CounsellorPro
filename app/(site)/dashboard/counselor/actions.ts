@@ -62,6 +62,51 @@ export async function createTimeSlot(formData: FormData) {
   redirect("/dashboard/counselor");
 }
 
+/** Allow counselors to update timing of open (unbooked) slots. */
+export async function updateTimeSlot(formData: FormData) {
+  const slotId = String(formData.get("slot_id") ?? "").trim();
+  const date = String(formData.get("date") ?? "").trim();
+  const start_time = String(formData.get("start_time") ?? "").trim();
+  const end_time = String(formData.get("end_time") ?? "").trim();
+
+  if (!slotId || !date || !start_time || !end_time) {
+    redirect("/dashboard/counselor?slot=edit-missing");
+  }
+  if (start_time >= end_time) {
+    redirect("/dashboard/counselor?slot=edit-time");
+  }
+
+  const { supabase, counselorId } = await counselorContext();
+  const { data: slot, error: slotError } = await supabase
+    .from("time_slots")
+    .select("id, is_booked")
+    .eq("id", slotId)
+    .eq("counselor_id", counselorId)
+    .maybeSingle();
+
+  if (slotError || !slot) {
+    redirect("/dashboard/counselor?slot=edit-missing");
+  }
+  if (slot.is_booked) {
+    redirect("/dashboard/counselor?slot=edit-booked");
+  }
+
+  const { error: updateError } = await supabase
+    .from("time_slots")
+    .update({ date, start_time, end_time })
+    .eq("id", slotId)
+    .eq("counselor_id", counselorId)
+    .eq("is_booked", false);
+
+  if (updateError) {
+    redirect("/dashboard/counselor?slot=edit-db");
+  }
+
+  revalidatePath("/dashboard/counselor");
+  revalidatePath("/dashboard/student");
+  redirect("/dashboard/counselor");
+}
+
 /** Counselor marks session outcome; cancelling frees the slot again. */
 export async function setAppointmentStatus(formData: FormData) {
   const appointmentId = String(formData.get("appointment_id") ?? "").trim();
